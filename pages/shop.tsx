@@ -103,58 +103,39 @@ const Shop = ({ Categories, location }: Props) => {
           </Button>
         </div>
       </Box>
-      <Divider sx={{ my: 4 }} />
-      <Typography variant="h3" sx={{ textAlign: "center" }}>
+      <Divider sx={{ my: 5 }} />
+      <Typography variant="h3" sx={{ textAlign: "center", }}>
         {" "}
         Shop Item
       </Typography>
-      <Grid container spacing={4}>
-        <Grid item xs={4}>
-          <Paper sx={{ height: 300, width: 250 }}>
-            <Typography>Name: Jeans</Typography>
-            <Image src={assest?.smasung} alt="" height={200} width={200} />
+      <Grid container spacing={4} sx={{mt:5}}>
+        {Categories.map((item, index) => {
+          return (
+            <>
+              <Grid item xs={4} key={index}>
+                <Typography>Name: {item.title}</Typography>
 
-            <Button variant="contained">Show</Button>
-          </Paper>
-        </Grid>
-        <Grid item xs={4}>
-          <Paper sx={{ height: 300, width: 250 }}>
-            <Typography>Name: T-Shirt</Typography>
-            <img src={assest?.prabhuji} alt="" height={200} />
-            <Button variant="contained">Show</Button>
-          </Paper>
-        </Grid>
-        <Grid item xs={4}>
-          <Paper sx={{ height: 300, width: 250 }}>
-            <Typography>Name: Shoes</Typography>
-            <img src={assest.iphone} alt="" height={250} />
-            <Button variant="contained">Show</Button>
-          </Paper>
-        </Grid>
-        <Grid item xs={4}>
-          <Paper sx={{ height: 300, width: 250 }}>
-            <Typography>Name: Jeans</Typography>
-            <Image src={assest?.shoe} alt="" height={200} width={200} />
+                <Paper
+                  sx={{
+                    height: 307,
+                    width: 250,
+                    m: "auto",
+                    textAlign: "center",
+                    padding: 2,
+                    my: 2
+                  }}
+                >
+                  <Image src={item.image} alt="" height={300} width={250} />
+                </Paper>
+                <div style={{ textAlign: "center" }}>
+                  <Button variant="contained">Show</Button>
+                </div>
+              </Grid>
+            </>
+          );
+        })}
 
-            <Button variant="contained">Show</Button>
-          </Paper>
-        </Grid>
-        <Grid item xs={4}>
-          <Paper sx={{ height: 300, width: 250 }}>
-            <Typography>Name: Jeans</Typography>
-            <Image src={assest?.jeans} alt="" height={200} width={200} />
-
-            <Button variant="contained">Show</Button>
-          </Paper>
-        </Grid>
-        <Grid item xs={4}>
-          <Paper sx={{ height: 300, width: 250 }}>
-            <Typography>Name: Jeans</Typography>
-            <Image src={assest?.team} alt="" height={200} width={200} />
-
-            <Button variant="contained">Show</Button>
-          </Paper>
-        </Grid>
+       
       </Grid>
     </Container>
   );
