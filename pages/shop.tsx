@@ -1,5 +1,7 @@
 "use client";
 
+import { getProducts, getSingleProduct } from "@/api/functions/products.api";
+import { AllProductsRoot } from "@/interface/products.interface";
 import assest from "@/json/assest";
 import {
   Box,
@@ -11,8 +13,11 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import { GetServerSideProps, GetStaticProps } from "next";
+import axios from "axios";
+import { indexOf } from "lodash";
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 const obj = {
   name: "hyper",
@@ -26,15 +31,18 @@ const obj = {
 const keys = Object.keys(obj.avail);
 console.log("obj contains " + keys.length + " keys: " + keys);
 type CategoriesType = { title: string; image: string }[];
+
 type Props = {
   Categories: CategoriesType;
+  Products: AllProductsRoot;
   location: string;
 };
 
-const Shop = ({ Categories, location }: Props) => {
-  console.log(Categories, location);
+const Shop = ({ Categories, Products, location }: Props) => {
+  console.log("data", Categories, location, Products);
   const [paramsTextFields, setParamsTextFields] = useState([0]);
 
+  const router=useRouter()
   const mapTextFields = (): React.JSX.Element[] => {
     return paramsTextFields.map((item, i) => {
       return (
@@ -104,16 +112,18 @@ const Shop = ({ Categories, location }: Props) => {
         </div>
       </Box>
       <Divider sx={{ my: 5 }} />
-      <Typography variant="h3" sx={{ textAlign: "center", }}>
+      <Typography variant="h3" sx={{ textAlign: "center" }}>
         {" "}
         Shop Item
       </Typography>
-      <Grid container spacing={4} sx={{mt:5}}>
+      {/* <Grid container spacing={4} sx={{ mt: 5 }}> 
         {Categories.map((item, index) => {
           return (
             <>
               <Grid item xs={4} key={index}>
-                <Typography>Name: {item.title}</Typography>
+                <Typography variant="h5" textAlign={"center"}>
+                  Name: {item.title}
+                </Typography>
 
                 <Paper
                   sx={{
@@ -134,14 +144,49 @@ const Shop = ({ Categories, location }: Props) => {
             </>
           );
         })}
+      </Grid> */}
+      <Grid container spacing={4} sx={{ mt: 5 }}>
+        {Products.map((item, index) => {
+          return (
+            <>
+              <Grid item md={3} xs={12} sm={6} key={index}>
+                <Typography variant="h5" textAlign={"center"}>
+                  Name: {item?.title}
+                </Typography>
 
-       
+                <Paper
+                  sx={{
+                    height: 320,
+                    width: 250,
+                    m: "auto",
+                    textAlign: "center",
+                    padding: 2,
+                    my: 2
+                  }}
+                >
+                  <Image
+                    src={item?.image}
+                    alt=""
+                    height={300}
+                    width={250}
+                    style={{ height: "300px" }}
+                  />
+                </Paper>
+                <div style={{ textAlign: "center" }}>
+                  <Button variant="contained" onClick={()=>router.push(`/details/${item?.id}`)}>Show</Button>
+                </div>
+              </Grid>
+            </>
+          );
+        })}
       </Grid>
     </Container>
   );
 };
 
-export const getStaticProps = (async ({}) => {
+export const getStaticProps = (async (context) => {
+  // const arr: string[]=
+  const resp = await getProducts();
   // Fetch data from external API
 
   const res: CategoriesType = [
@@ -172,18 +217,22 @@ export const getStaticProps = (async ({}) => {
   ];
 
   console.log("ayan", res);
+  console.log("prd", resp);
 
   // Pass data to the page via props
   return {
     props: {
+      Products: resp,
       Categories: res,
       location: "Kolkata"
     },
     revalidate: 120
   };
 }) satisfies GetStaticProps<{
+  Products: AllProductsRoot;
   Categories: CategoriesType;
   location: string;
 }>;
+
 
 export default Shop;
