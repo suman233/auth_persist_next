@@ -3,6 +3,7 @@
 import { getProducts, getSingleProduct } from "@/api/functions/products.api";
 import { AllProductsRoot } from "@/interface/products.interface";
 import assest from "@/json/assest";
+import CustomInput from "@/ui/Inputs/CustomInput";
 import {
   Box,
   Button,
@@ -14,6 +15,7 @@ import {
   Typography
 } from "@mui/material";
 import axios from "axios";
+import html2canvas from "html2canvas";
 import { indexOf } from "lodash";
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
@@ -42,7 +44,7 @@ const Shop = ({ Categories, Products, location }: Props) => {
   console.log("data", Categories, location, Products);
   const [paramsTextFields, setParamsTextFields] = useState([0]);
 
-  const router=useRouter()
+  const router = useRouter();
   const mapTextFields = (): React.JSX.Element[] => {
     return paramsTextFields.map((item, i) => {
       return (
@@ -94,9 +96,39 @@ const Shop = ({ Categories, Products, location }: Props) => {
   const handleSubmit = () => {
     setParamsTextFields((prev) => [...prev, 0]);
   };
+  const snapshotClick = () => {
+    const element = document.body;
+    html2canvas(element).then(function (canvas) {
+      const imageData = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = imageData;
+      link.download = "snapshot.png";
+      link.click();
+
+    });
+  };
+
+  const [url, setUrl] = useState("");
+ var l= (frames).document.body
   return (
     <Container>
-      <Typography>Shop Item Page</Typography>
+      <Typography>Shop Item Page </Typography>
+
+      <div style={{ height: "50px", marginTop: 9 }}>
+        <form style={{ float: "left" }}>
+          <TextField onChange={(e)=>setUrl(e.target.value)} />
+          <Button variant="contained" sx={{ mx: 2 }} onClick={()=>router.push(`${url}`)}>
+            Go to Url
+          </Button>
+        </form>
+        <Button
+          variant="contained"
+          sx={{ float: "right" }}
+          onClick={snapshotClick}
+        >
+          Click
+        </Button>
+      </div>
       <Box sx={{ my: "30px" }}>
         <Typography sx={{ mb: 3, fontWeight: "bold" }}>Query Params</Typography>
         <div>
@@ -173,7 +205,12 @@ const Shop = ({ Categories, Products, location }: Props) => {
                   />
                 </Paper>
                 <div style={{ textAlign: "center" }}>
-                  <Button variant="contained" onClick={()=>router.push(`/details/${item?.id}`)}>Show</Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => router.push(`/details/${item?.id}`)}
+                  >
+                    Show
+                  </Button>
                 </div>
               </Grid>
             </>
@@ -233,6 +270,5 @@ export const getStaticProps = (async (context) => {
   Categories: CategoriesType;
   location: string;
 }>;
-
 
 export default Shop;
